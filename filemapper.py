@@ -89,6 +89,7 @@ Examples:
 
     parser.add_argument(
         "--version",
+        "-v",
         action="version",
         version=f"%(prog)s {get_version()}",
     )
