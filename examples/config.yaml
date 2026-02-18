@@ -1,0 +1,110 @@
+# Advanced mapping example - transformations, expressions, and conditions
+
+version: "1.0"
+
+input:
+  columns:
+    - name: first_name
+      type: string
+      required: true
+    - name: last_name
+      type: string
+      required: true
+    - name: age
+      type: integer
+      required: true
+      min: 0
+      max: 150
+    - name: email
+      type: string
+      required: true
+      pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+    - name: signup_date
+      type: date
+      required: true
+    - name: status
+      type: string
+      required: true
+    - name: country_code
+      type: string
+      required: false
+
+output:
+  columns:
+    - name: fullName
+      type: string
+    - name: emailAddress
+      type: string
+    - name: ageGroup
+      type: string
+    - name: registrationDate
+      type: date
+    - name: isAdult
+      type: boolean
+    - name: accountStatus
+      type: string
+    - name: region
+      type: string
+    - name: flagged
+      type: string
+
+mappings:
+  # Build full name from first and last
+  - output: fullName
+    value: "{first_name} {last_name}"
+
+  # Transform email to lowercase
+  - output: emailAddress
+    source: email
+    transform: lowercase
+
+  # Conditional mapping based on age
+  - output: ageGroup
+    conditions:
+      - when: "{age} < 18"
+        value: "Minor"
+      - when: "{age} >= 18 and {age} < 65"
+        value: "Adult"
+      - when: "{age} >= 65"
+        value: "Senior"
+      - default: "Unknown"
+
+  # Type conversion from string to date
+  - output: registrationDate
+    source: signup_date
+    type_conversion:
+      from: string
+      to: date
+      format: "%d-%m-%Y"
+
+  # Boolean expression
+  - output: isAdult
+    expression: "{age} >= 18"
+
+  # Conditional with multiple conditions
+  - output: accountStatus
+    conditions:
+      - when: "{status} == 'active'"
+        value: "Active User"
+      - when: "{status} == 'inactive'"
+        value: "Inactive User"
+      - when: "{status} == 'suspended'"
+        value: "Suspended"
+      - default: "Unknown Status"
+
+  # Mapping with default value
+  - output: region
+    source: country_code
+    default: "UNKNOWN"
+    transform: uppercase
+
+  # Cross-referencing output columns, and case-insensitive checking
+  - output: region
+    source: country_code
+    default: "UNKNOWN"
+    transform: uppercase
+  - output: flagged
+    conditions:
+      - when: "{region} icontains 'Unknown'"
+        value: "Yes"
+      - default: "No"

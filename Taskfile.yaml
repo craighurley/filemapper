@@ -1,0 +1,117 @@
+version: '3'
+
+vars:
+  PACKAGE_TEST_DIR: test
+  VENV_DIR: venv
+
+tasks:
+  build:
+    desc: Build distribution package
+    cmds:
+      - task: clean
+      - python -m build
+
+  clean:
+    desc: Clean build artefacts and cache files
+    cmds:
+      - find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+      - find . -type d -name ".mypy_cache" -exec rm -rf {} + 2>/dev/null || true
+      - find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true
+      - find . -type d -name "*.egg-info" -exec rm -rf {} + 2>/dev/null || true
+      - find . -type d -name "*.ruff_cache" -exec rm -rf {} + 2>/dev/null || true
+      - find . -type d -name "build" -exec rm -rf {} + 2>/dev/null || true
+      - find . -type d -name "dist" -exec rm -rf {} + 2>/dev/null || true
+      - find . -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
+      - find . -type f -name "*.pyc" -delete
+      - find . -type f -name "*.pyo" -delete
+      - find . -type f -name ".coverage" -delete
+
+  deploy-prod:
+    desc: Deploy package to pypi.org
+    cmds:
+      - task: build
+      - python -m twine upload dist/*
+
+  deploy-test:
+    desc: Deploy package to test.pypi.org
+    cmds:
+      - task: build
+      - python -m twine upload --repository testpypi dist/*
+
+  format:
+    desc: Formatting code
+    cmds:
+      - ruff format
+
+  install:
+    desc: Installing dependencies
+    cmds:
+      - pip install -Ur requirements.txt
+
+  lint:
+    desc: Linting
+    cmds:
+      - ruff check --fix
+      - markdownlint -c .markdownlintrc "**/*.md"
+      - yamllint -c .yamllint ./
+
+  test:
+    desc: Running tests
+    cmds:
+      - pytest tests/
+
+  validate-package-local:
+    desc: Use the local package to install into a clean venv for validation testing
+    dir: "{{.PACKAGE_TEST_DIR}}"
+    cmds:
+      - task: venv-setup
+      - ./{{.VENV_DIR}}/bin/pip install -U ../dist/filemapper-*.whl
+      - ./{{.VENV_DIR}}/bin/filemapper --version
+      - task: venv-clean
+
+  validate-package-pypi:
+    desc: Install the package from pypi into a clean venv for validation testing
+    dir: "{{.PACKAGE_TEST_DIR}}"
+    vars:
+      TAG:
+        sh: git tag -l --points-at HEAD
+    cmds:
+      - task: venv-setup
+      - echo "{{.TAG}}" | grep -E "^[0-9]+\.[0-9]+\.[0-9]+"
+      - ./{{.VENV_DIR}}/bin/pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple filemapper=={{.TAG}}
+      - ./{{.VENV_DIR}}/bin/filemapper --version
+      - task: venv-clean
+
+  venv-clean:
+    desc: Remove the venv
+    dir: "{{.PACKAGE_TEST_DIR}}"
+    cmds:
+      - rm -fr {{.VENV_DIR}}
+    silent: true
+
+  venv-setup:
+    desc: Create venv for testing
+    dir: "{{.PACKAGE_TEST_DIR}}"
+    cmds:
+      - task: venv-clean
+      - python -m venv {{.VENV_DIR}}
+      - ./{{.VENV_DIR}}/bin/pip install -qU pip
+
+  version-check:
+    desc: Check version matches git tag in pyproject.toml
+    vars:
+      TAG:
+        sh: git tag -l --points-at HEAD
+    cmds:
+      - echo "{{.TAG}}" | grep -E "^[0-9]+\.[0-9]+\.[0-9]+"
+      - grep 'version = "{{.TAG}}"' pyproject.toml
+
+  version-update:
+    desc: Update version in pyproject.toml
+    vars:
+      TAG:
+        sh: git tag -l --points-at HEAD
+    cmds:
+      - echo "{{.TAG}}" | grep -E "^[0-9]+\.[0-9]+\.[0-9]+"
+      - gsed -i -e 's/^version = ".*/version = "{{.TAG}}"/g' pyproject.toml
+      - grep 'version = "{{.TAG}}"' pyproject.toml

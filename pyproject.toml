@@ -1,0 +1,91 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "filemapper"
+version = "1.0.0"
+description = "A CLI tool for mapping and transforming CSV files based on YAML configuration"
+readme = "README.md"
+license = "MIT"
+authors = [
+    {name = "Craig Hurley", email = "craighurley78@gmail.com"}
+]
+maintainers = [
+    {name = "Craig Hurley", email = "craighurley78@gmail.com"}
+]
+keywords = ["csv", "mapping", "transform"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Environment :: Console",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Utilities",
+    "Topic :: Text Processing",
+]
+requires-python = ">=3.13"
+dependencies = [
+    "python-dateutil>=2.8.2",
+    "PyYAML>=6.0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.15.1",
+    "yamllint>=1.38.0",
+]
+deploy = [
+    "build>=1.0.0",
+    "setuptools>=68.0",
+    "twine>=4.0.0",
+    "wheel>=0.42.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/craighurley/filemapper"
+Repository = "https://github.com/craighurley/filemapper"
+Issues = "https://github.com/craighurley/filemapper/issues"
+
+[project.scripts]
+filemapper = "filemapper:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["core*", "models*", "utils*"]
+
+[tool.setuptools]
+py-modules = ["filemapper"]
+
+[tool.pytest.ini_options]
+addopts = ["-v", "--tb=short"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+extend-exclude = [
+    "temp/",
+    "build/",
+    "dist/",
+    "dist-test/"
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N"]
+ignore = []
+
+[tool.coverage.run]
+source = ["core", "models", "utils"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]

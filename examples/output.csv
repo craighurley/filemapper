@@ -1,0 +1,6 @@
+fullName,emailAddress,ageGroup,registrationDate,isAdult,accountStatus,region,flagged
+John Smith,john.smith@example.com,Adult,2022-01-15 00:00:00,True,Active User,NZ,No
+Jane Doe,jane.doe@example.com,Minor,2025-02-20 00:00:00,False,Active User,UK,No
+Bob Johnson,bob.j@example.com,Senior,2024-01-10 00:00:00,True,Inactive User,CA,No
+Alice Williams,alice.w@example.com,Adult,2025-03-05 00:00:00,True,Suspended,AU,No
+Charlie Brown,charlie@example.com,Adult,2026-01-25 00:00:00,True,Active User,UNKNOWN,Yes

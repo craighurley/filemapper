@@ -1,0 +1,6 @@
+first_name,last_name,age,email,signup_date,status,country_code
+John,Smith,25,john.smith@example.com,15-01-2022,active,nz
+Jane,Doe,17,JANE.DOE@example.com,20-02-2025,active,uk
+Bob,Johnson,70,bob.j@example.com,10-01-2024,inactive,ca
+Alice,Williams,45,alice.w@example.com,05-03-2025,suspended,au
+Charlie,Brown,30,charlie@example.com,25-01-2026,active,
