@@ -16,23 +16,25 @@ map, and convert CSV data without writing code.
 
 ## Installation
 
-```bash
-pip install -r requirements.txt
+### From PyPi
+
+```shell
+pip install -U filemapper
 ```
 
 ## Command Reference
 
 ### Basic Usage
 
-```bash
+```shell
 # Transform CSV with configuration
-python3 filemapper.py -i input.csv -c config.yaml -o output.csv
+filemapper -i input.csv -c config.yaml -o output.csv
 
 # Validate input data only
-python3 filemapper.py -i input.csv -c config.yaml --validate-only
+filemapper -i input.csv -c config.yaml --validate-only
 
 # Strict mode (fail on first error)
-python3 filemapper.py -i input.csv -c config.yaml -o output.csv --strict
+filemapper -i input.csv -c config.yaml -o output.csv --strict
 ```
 
 ### All Command Options
@@ -361,7 +363,7 @@ The output file was created by running this command: `python filemapper.py -i ./
 
 **Lenient mode (default)**: Collects all errors and continues processing
 
-```bash
+```shell
 python3 filemapper.py -i input.csv -c config.yaml -o output.csv
 ```
 
@@ -371,7 +373,7 @@ python3 filemapper.py -i input.csv -c config.yaml -o output.csv
 
 **Strict mode**: Stops on first error
 
-```bash
+```shell
 python3 filemapper.py -i input.csv -c config.yaml -o output.csv --strict
 ```
 
