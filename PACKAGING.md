@@ -33,7 +33,7 @@ This will:
 Install the locally built package:
 
 ```shell
-task validate-package-local
+task validate-local-package
 ```
 
 This will:
@@ -46,7 +46,7 @@ This will:
 Install the package from pypi:
 
 ```shell
-task validate-package-pypi
+task validate-pypi-package
 ```
 
 This will:
@@ -90,10 +90,10 @@ This will:
 
 Once verified on test PyPI, deploy to production:
 
-Deploy to test PyPI to verify everything works:
+Deploy to prod PyPI to verify everything works:
 
 ```shell
-task deploy-test
+task deploy-prod
 ```
 
 ## Entry Point

@@ -11,6 +11,15 @@ tasks:
       - task: clean
       - python -m build
 
+  check-version:
+    desc: Check version matches git tag in pyproject.toml
+    vars:
+      TAG:
+        sh: git tag -l --points-at HEAD
+    cmds:
+      - echo "{{.TAG}}" | grep -E "^[0-9]+\.[0-9]+\.[0-9]+"
+      - grep 'version = "{{.TAG}}"' pyproject.toml
+
   clean:
     desc: Clean build artefacts and cache files
     cmds:
@@ -60,7 +69,7 @@ tasks:
     cmds:
       - pytest tests/
 
-  validate-package-local:
+  validate-local-package:
     desc: Use the local package to install into a clean venv for validation testing
     dir: "{{.PACKAGE_TEST_DIR}}"
     cmds:
@@ -69,8 +78,8 @@ tasks:
       - ./{{.VENV_DIR}}/bin/filemapper --version
       - task: venv-clean
 
-  validate-package-pypi:
-    desc: Install the package from pypi into a clean venv for validation testing
+  validate-pypi-package:
+    desc: Install the package from test.pypi.org into a clean venv for validation testing
     dir: "{{.PACKAGE_TEST_DIR}}"
     vars:
       TAG:
@@ -85,6 +94,7 @@ tasks:
   venv-clean:
     desc: Remove the venv
     dir: "{{.PACKAGE_TEST_DIR}}"
+    internal: true
     cmds:
       - rm -fr {{.VENV_DIR}}
     silent: true
@@ -92,26 +102,8 @@ tasks:
   venv-setup:
     desc: Create venv for testing
     dir: "{{.PACKAGE_TEST_DIR}}"
+    internal: true
     cmds:
       - task: venv-clean
       - python -m venv {{.VENV_DIR}}
       - ./{{.VENV_DIR}}/bin/pip install -qU pip
-
-  version-check:
-    desc: Check version matches git tag in pyproject.toml
-    vars:
-      TAG:
-        sh: git tag -l --points-at HEAD
-    cmds:
-      - echo "{{.TAG}}" | grep -E "^[0-9]+\.[0-9]+\.[0-9]+"
-      - grep 'version = "{{.TAG}}"' pyproject.toml
-
-  version-update:
-    desc: Update version in pyproject.toml
-    vars:
-      TAG:
-        sh: git tag -l --points-at HEAD
-    cmds:
-      - echo "{{.TAG}}" | grep -E "^[0-9]+\.[0-9]+\.[0-9]+"
-      - gsed -i -e 's/^version = ".*/version = "{{.TAG}}"/g' pyproject.toml
-      - grep 'version = "{{.TAG}}"' pyproject.toml
