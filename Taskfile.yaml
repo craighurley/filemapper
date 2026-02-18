@@ -48,24 +48,24 @@ tasks:
       - python -m twine upload --repository testpypi dist/*
 
   format:
-    desc: Formatting code
+    desc: Format code
     cmds:
       - ruff format
 
   install:
-    desc: Installing dependencies
+    desc: Install dependencies
     cmds:
       - pip install -Ur requirements.txt
 
   lint:
-    desc: Linting
+    desc: Lint
     cmds:
       - ruff check --fix
       - markdownlint -c .markdownlintrc "**/*.md"
       - yamllint -c .yamllint ./
 
   test:
-    desc: Running tests
+    desc: Run tests
     cmds:
       - pytest tests/
 

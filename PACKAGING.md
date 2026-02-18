@@ -1,18 +1,21 @@
-# FileMapper Packaging Guide
+# Packaging Guide
 
 This document describes how to build and distribute the FileMapper package.
 
 ## Prerequisites
 
-Install Taskfile <https://taskfile.dev/docs/installation>.
+- Python 3.13+
+- [Taskfile](https://taskfile.dev)
 
-Then install the necessary pip packages:
+## Setup
+
+Install the necessary pip packages:
 
 ```shell
 task install
 ```
 
-## Building the Package
+## Building the package
 
 Build both source distribution (`.tar.gz`) and wheel (`.whl`):
 
@@ -43,22 +46,9 @@ This will:
 3. Attempt running the application
 4. Remove the venv
 
-Install the package from pypi:
-
-```shell
-task validate-pypi-package
-```
-
-This will:
-
-1. Create a venv
-2. Install the package from test.pypi.org into the venv
-3. Attempt running the application
-4. Remove the venv
-
 ## Publishing to PyPI
 
-### Requirements
+### PyPI Requirements
 
 You'll need PyPI credentials configured. Set up authentication with:
 
@@ -86,11 +76,22 @@ This will:
 1. Build the package
 2. Deploy to test.pypi.org
 
+Now validate that package can be installed from test.pypi.org:
+
+```shell
+task validate-pypi-package
+```
+
+This will:
+
+1. Create a venv
+2. Install the package from test.pypi.org into the venv
+3. Attempt running the application
+4. Remove the venv
+
 ### Production PyPI
 
-Once verified on test PyPI, deploy to production:
-
-Deploy to prod PyPI to verify everything works:
+Once verified on test PyPI, deploy to production PyPi:
 
 ```shell
 task deploy-prod
@@ -98,7 +99,7 @@ task deploy-prod
 
 ## Entry Point
 
-The package creates a `filemapper` command-line tool that users can run after installation:
+The package creates a command-line tool that users can run after installation:
 
 ```shell
 filemapper -i input.csv -c config.yaml -o output.csv
@@ -126,27 +127,6 @@ Follow semantic versioning:
 - **Minor** (Y): New features, backwards-compatible
 - **Patch** (Z): Bug fixes, backwards-compatible
 
-## Dependencies
-
-**Core dependencies** (required to run):
-
-- `python-dateutil>=2.8.2`
-- `PyYAML>=6.0.1`
-
-**Dev dependencies** (optional):
-
-- `pytest>=7.4.0`
-- `pytest-cov>=4.1.0`
-- `ruff>=0.15.1`
-- `yamllint`
-
-**Deploy dependencies** (for publishing):
-
-- `build>=1.0.0`
-- `setuptools>=68.0`
-- `twine>=4.0.0`
-- `wheel>=0.42.0`
-
 ## Troubleshooting
 
 ### Build fails with "No module named build"
@@ -162,3 +142,19 @@ Ensure you have a `~/.pypirc` file with valid API tokens:
 ### Package doesn't include expected files
 
 Check `pyproject.toml` - the `[tool.setuptools.packages.find]` and `[tool.setuptools]` sections control what gets included.
+
+## Tasks
+
+```sh
+task build                       # Build distribution package
+task check-version               # Check version matches git tag in pyproject.toml
+task clean                       # Clean build artefacts and cache files
+task deploy-prod                 # Deploy package to pypi.org
+task deploy-test                 # Deploy package to test.pypi.org
+task format                      # Format code
+task install                     # Install dependencies
+task lint                        # Lint
+task test                        # Run tests
+task validate-local-package      # Use the local package to install into a clean venv for validation testing
+task validate-pypi-package       # Install the package from test.pypi.org into a clean venv for validation testing
+```

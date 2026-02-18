@@ -1,4 +1,4 @@
-# FileMapper
+# fileMapper
 
 A CSV transformation tool controlled by YAML configuration. Use this tool to transform, validate,
 map, and convert CSV data without writing code.
@@ -16,10 +16,16 @@ map, and convert CSV data without writing code.
 
 ## Installation
 
-### From PyPi
+Install from PyPi:
 
 ```shell
 pip install -U filemapper
+```
+
+Alternatively you can run directly using `uvx`:
+
+```shell
+uvx filemapper
 ```
 
 ## Command Reference
@@ -45,7 +51,7 @@ filemapper -i input.csv -c config.yaml -o output.csv --strict
 | `-c, --config FILE`   | Yes         | -       | YAML configuration file path                  |
 | `-o, --output FILE`   | Conditional | -       | Output CSV file path                          |
 | `--validate-only`     | No          | false   | Validate input against schema, then exit      |
-| `--version`           | No          | -       | Print the version number                      |
+| `-v, --version`       | No          | -       | Print the version number                      |
 | `--strict`            | No          | false   | Stop processing on first validation/map error |
 | `--encoding ENCODING` | No          | utf-8   | Character encoding for all files              |
 | `--delimiter CHAR`    | No          | `,`     | CSV delimiter character                       |
@@ -465,7 +471,7 @@ Need to transform CSV data?
 ```yaml
 - output: country
   source: country_code
-  default: "US"
+  default: "NZ"
 ```
 
 #### Pattern 4: Categorise numeric values
