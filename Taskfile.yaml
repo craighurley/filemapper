@@ -2,7 +2,7 @@ version: '3'
 
 vars:
   PACKAGE_TEST_DIR: test
-  VENV_DIR: venv
+  VENV_DIR: .venv
 
 tasks:
   build:
@@ -55,7 +55,7 @@ tasks:
   install:
     desc: Install dependencies
     cmds:
-      - pip install -Ur requirements.txt
+      - pip install -Ue ".[dev]"
 
   lint:
     desc: Lint

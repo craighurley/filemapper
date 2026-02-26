@@ -4,9 +4,12 @@
       "Bash(python:*)",
       "Bash(python3:*)",
       "Bash(ruff:*)",
+      "Bash(task format)",
+      "Bash(task install)",
       "Bash(task lint)",
       "Bash(task test)",
-      "Bash(task build)"
+      "Bash(task build)",
+      "Bash(task validate-local-package)"
     ]
   }
 }

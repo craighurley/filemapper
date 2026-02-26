@@ -5,7 +5,7 @@ A CLI tool that maps and transforms CSV files based on YAML configuration. It re
 ## Quick Start
 
 ```bash
-pip install -r requirements.txt
+pip install -Ue ".[dev]"
 python3 filemapper.py -i input.csv -c config.yaml -o output.csv
 ```
 
@@ -16,7 +16,6 @@ The main project structure is as follows:
 ```
 filemapper/
 ├── filemapper.py              # CLI entry point, argument parsing, orchestration
-├── requirements.txt           # Dependencies
 ├── core/                      # Core business logic
 │   ├── config_parser.py       # Loads YAML config into typed Config objects
 │   ├── csv_reader.py          # Reads CSV, yields row dicts with __row_number__

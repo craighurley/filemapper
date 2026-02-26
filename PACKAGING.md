@@ -5,14 +5,13 @@ This document describes how to build and distribute the FileMapper package.
 ## Prerequisites
 
 - Python 3.13+
-- [Taskfile](https://taskfile.dev)
 
 ## Setup
 
 Install the necessary pip packages:
 
 ```shell
-task install
+pip install -Ue ".[dev]"
 ```
 
 ## Building the package
