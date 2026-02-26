@@ -9,6 +9,7 @@ from models.config import (
     MappingRule,
     OutputColumn,
     OutputSchema,
+    TypeConversion,
 )
 
 
@@ -775,6 +776,42 @@ mappings:
             "__row_number__": 1,
         }
         assert mapper.map_row(row)["serverId"] == "prod-server1"
+
+    def test_map_row_type_conversion_on_zero(self):
+        """Type conversion must not be skipped when result is integer zero."""
+        config = Config(
+            version="1.0",
+            input_schema=InputSchema(columns=[InputColumn(name="count", type="integer")]),
+            output_schema=OutputSchema(columns=[OutputColumn(name="countStr", type="string")]),
+            mappings=[
+                MappingRule(
+                    output="countStr",
+                    source="count",
+                    type_conversion=TypeConversion(from_type="integer", to_type="string"),
+                )
+            ],
+        )
+        mapper = Mapper(config)
+        result = mapper.map_row({"count": 0, "__row_number__": 1})
+        assert result["countStr"] == "0"
+
+    def test_map_row_transform_on_false(self):
+        """Transform must not be skipped when result is boolean False."""
+        config = Config(
+            version="1.0",
+            input_schema=InputSchema(columns=[InputColumn(name="age", type="integer")]),
+            output_schema=OutputSchema(columns=[OutputColumn(name="isAdult", type="string")]),
+            mappings=[
+                MappingRule(
+                    output="isAdult",
+                    expression="{age} >= 18",
+                    transform="lowercase",
+                )
+            ],
+        )
+        mapper = Mapper(config)
+        result = mapper.map_row({"age": "15", "__row_number__": 1})
+        assert result["isAdult"] == "false"
 
     def test_map_row_references_earlier_output(
         self,

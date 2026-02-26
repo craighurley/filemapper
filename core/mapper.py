@@ -134,11 +134,11 @@ class Mapper:
             result = self._resolve_template(str(mapping.default), input_row)
 
         # Apply transformation if specified
-        if result and mapping.transform:
+        if result is not None and result != "" and mapping.transform:
             result = self.transformer.apply_transform(result, mapping.transform)
 
         # Apply type conversion if specified
-        if result and mapping.type_conversion:
+        if result is not None and result != "" and mapping.type_conversion:
             tc = mapping.type_conversion
             result = self.transformer.convert_type(
                 result,
