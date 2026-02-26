@@ -150,9 +150,8 @@ task check-version               # Check version matches git tag in pyproject.to
 task clean                       # Clean build artefacts and cache files
 task deploy-prod                 # Deploy package to pypi.org
 task deploy-test                 # Deploy package to test.pypi.org
-task format                      # Format code
 task install                     # Install dependencies
-task lint                        # Lint
+task lint                        # Format and then lint
 task test                        # Run tests
 task validate-local-package      # Use the local package to install into a clean venv for validation testing
 task validate-pypi-package       # Install the package from test.pypi.org into a clean venv for validation testing

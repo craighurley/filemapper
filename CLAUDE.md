@@ -266,9 +266,6 @@ Numeric string values from CSV are auto-converted to int/float for comparisons.
 This project uses Taskfile instead of Make.
 
 ```bash
-# Format
-task format
-
 # Lint
 task lint
 

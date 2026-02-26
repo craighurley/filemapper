@@ -1,6 +1,8 @@
 version: '3'
 
 vars:
+  PACKAGE_NAME:
+    sh: grep '^name = ' pyproject.toml | sed 's/name = "\(.*\)"/\1/'
   PACKAGE_TEST_DIR: test
   VENV_DIR: .venv
 
@@ -9,6 +11,7 @@ tasks:
     desc: Build distribution package
     cmds:
       - task: clean
+      - task: test
       - python -m build
 
   check-version:
@@ -47,11 +50,6 @@ tasks:
       - task: build
       - python -m twine upload --repository testpypi dist/*
 
-  format:
-    desc: Format code
-    cmds:
-      - ruff format
-
   install:
     desc: Install dependencies
     cmds:
@@ -60,6 +58,7 @@ tasks:
   lint:
     desc: Lint
     cmds:
+      - ruff format
       - ruff check --fix
       - markdownlint -c .markdownlintrc "**/*.md"
       - yamllint -c .yamllint ./
@@ -74,8 +73,8 @@ tasks:
     dir: "{{.PACKAGE_TEST_DIR}}"
     cmds:
       - task: venv-setup
-      - ./{{.VENV_DIR}}/bin/pip install -U ../dist/filemapper-*.whl
-      - ./{{.VENV_DIR}}/bin/filemapper --version
+      - ./{{.VENV_DIR}}/bin/pip install -U ../dist/{{.PACKAGE_NAME}}-*.whl
+      - ./{{.VENV_DIR}}/bin/{{.PACKAGE_NAME}} --version
       - task: venv-clean
 
   validate-pypi-package:
@@ -87,8 +86,8 @@ tasks:
     cmds:
       - task: venv-setup
       - echo "{{.TAG}}" | grep -E "^[0-9]+\.[0-9]+\.[0-9]+"
-      - ./{{.VENV_DIR}}/bin/pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple filemapper=={{.TAG}}
-      - ./{{.VENV_DIR}}/bin/filemapper --version
+      - ./{{.VENV_DIR}}/bin/pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple {{.PACKAGE_NAME}}=={{.TAG}}
+      - ./{{.VENV_DIR}}/bin/{{.PACKAGE_NAME}} --version
       - task: venv-clean
 
   venv-clean:
